@@ -21,9 +21,28 @@ def sort_by_first_el(it):
 	return(it[0])
 
 
-def check_bounds(prev_step_array, this_step_array):
-	for i in range(len(this_step_array):
-		if 
+def check_bounds(prev_step_coords, this_step_coords):
+	for i in range(len(this_step_coords)):
+		if prev_step_coords[i][2] >= 0 and prev_step_coords[i][2] <= BOUND_LAYER \
+			and this_step_coords[i][2] <= CELL_SIZE and this_step_coords[i][2] >= CELL_SIZE - BOUND_LAYER:
+			edge_x = -1
+		elif prev_step_coords[i][2] <= CELL_SIZE and prev_step_coords[i][2] >= CELL_SIZE - BOUND_LAYER \
+			and this_step_coords[i][2] >= 0 and this_step_coords[i][2] <= BOUND_LAYER:
+			edge_x = 1
+		else:
+			edge_x = 0
+
+		if prev_step_coords[i][3] >= 0 and prev_step_coords[i][3] <= BOUND_LAYER \
+                        and this_step_coords[i][3] <= CELL_SIZE and this_step_coords[i][3] >= CELL_SIZE - BOUND_LAYER:
+                        edge_y = -1
+                elif prev_step_coords[i][3] <= CELL_SIZE and prev_step_coords[i][3] >= CELL_SIZE - BOUND_LAYER \
+                        and this_step_coords[i][3] >= 0 and this_step_coords[i][3] <= BOUND_LAYER:
+                        edge_y = 1
+                else:
+                        edge_y = 0
+
+		this_step_coords[i][2] += edge_x * CELL_SIZE
+		this_step_coords[i][3] += edge_y * CELL_SIZE
 
 
 def dump_input_data_into_array(filename, output_data):
@@ -40,6 +59,8 @@ def dump_input_data_into_array(filename, output_data):
 			read_flag = 0
 			if len(curr_step_data) != 0:
 				curr_step_data.sort(key=sort_by_first_el)
+				if len(output_data != 0):
+					check_bounds(output_data[len(output_data)-1], curr_step_data)
 				output_data.append(copy.deepcopy(curr_step_data))
 				curr_step_data.clear()
 		else if read_flag == 1:
