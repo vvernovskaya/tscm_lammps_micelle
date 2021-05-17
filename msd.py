@@ -1,12 +1,14 @@
 import pickle
 
 
+N_STEPS = 2000
 N_TYPES = 4
 '''
 Number of particles of each type (had to count here since 
 no information is in data.micelle or def.micelle).
 '''
 N_PARTICLES = [0] * N_TYPES
+N_PARAMS = 5
 
 
 def count_particles(step_coords):
@@ -15,7 +17,6 @@ def count_particles(step_coords):
 
 
 def count_msd(start_coords, curr_step_coords, all_types_msds):
-	all_types_msds.appe
 	for i in range(len((curr_step_coords)): 	# going through all the particles on this step
 		all_types_msds[curr_step_coords[i][1]-1] += (curr_step_coords[i][2] - start_coords[i][2])**2 + \
 							      (curr_step_coords[i][3] - start_coords[i][3])**2
@@ -32,9 +33,14 @@ with open('coords.pickle', 'rb') as f:
 
 count_particles(all_coords[0][0])
 
-all_steps_msds = [ [] for _ in range(N_TYPES)]
+all_params_msds = [ [ [0] * N_TYPES ] for _ in range(N_PARAMS) ] 
 
-for i in range(
+for i in range(N_PARAMS):
+	start_coords = all_coords[i][0]
+	for j in range(N_STEPS):
+		count_msd(start_coords, all_coords[i][j], all_params_msds[i])
 
+with open('msds.pickle', 'wb') as f:
+	pickle.dump(all_params_msds, f)
 
 
