@@ -1,5 +1,6 @@
 import pickle
 import copy
+import multiprocessing as mp
 
 '''
 This code separates dump.melt file into array of coords of
@@ -10,11 +11,14 @@ Boundary conditions are also taken into account here.
 
 CELL_SIZE = 20		# CHECK THIS !!!!!!!!!!!!!!!!!
 BOUND_LAYER = CELL_SIZE * 0.1
-N_STEPS = 300
+N_STEPS = 1000
 N_PARAMS = 5		# how many times we've modified the parameter
-PARAM_STEP = 0.5
+PARAM_STEP = 0.15
 INPUT_TEMPLATE = "temp_" 	# same part of input filenames
 INITIAL_PARAM = 0
+INPUT_FILENAME = "dump.micelle"
+
+NUM_CPU = 4
 
 
 def sort_by_first_el(it):
@@ -45,7 +49,8 @@ def check_bounds(prev_step_coords, this_step_coords):
 		this_step_coords[i][3] += edge_y * CELL_SIZE
 
 
-def dump_input_data_into_array(filename, output_data):
+def dump_input_data_into_array(filename):
+	output_data = []
 	read_flag = 0
 	curr_step_data = []
 	with open(filename) as f:
@@ -65,16 +70,24 @@ def dump_input_data_into_array(filename, output_data):
 				curr_step_data.clear()
 		else if read_flag == 1:
 			curr_step_data.append(curr_line)
+	return output_data
 
 
 filenames = []
 curr_param = INITIAL_PARAM
-output_coords_array = [None] * N_PARAMS 	# element of this array is an array of sorted arrays of coords
-
-for i in range(N_PARAMS):
-	output_array[i] = []
-	dump_input_data_into_array(INPUT_TEMPLATE + str(curr_param), output_coords_array[i])
+# output_coords_array = [None] * N_PARAMS 	# element of this array is an array of sorted arrays of coords
+input_filenames = []
+for i in range(NUM_PARAMS):
+	input_filenames.append(INPUT_FILENAME + "_" + str(curr_param))
 	curr_param += PARAM_STEP
+
+with mp.Pool(NUM_CPU) as p:
+	output_coords_aray = p.map(dump_input_into_array, input_filenames)
+
+#for i in range(N_PARAMS):
+#	output_array[i] = []
+#	dump_input_data_into_array(INPUT_FILENAME +"_" + str(curr_param), output_coords_array[i])
+#	curr_param += PARAM_STEP
 
 with open('coords.pickle', 'wb') as f:
 	pickle.dump(output_coords_array, f)
