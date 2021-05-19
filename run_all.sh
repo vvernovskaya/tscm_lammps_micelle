@@ -52,12 +52,17 @@ set grid xtics ytics
 set ylabel "Energy"
 set xlabel 'Step'
 set title "Energies with different starting temperatures" 
-plot "energies_0.txt" using 2:3 with lines title "temp 0", "energies_0.15.txt" using 2:3 with lines title "temp 0.15", "energies_0.3.txt" using 2:3 with lines title "temp 0.3", "energies_0.45.txt" using 2:3 with lines title "temp 0.45",  "energies_0.6.txt" using 2:3 with lines title "temp 0.6"
+plot "energies_0.txt" using 1:2 with lines title "temp 0", "energies_0.15.txt" using 1:2 with lines title "temp 0.15", "energies_0.3.txt" using 1:2 with lines title "temp 0.3", "energies_0.45.txt" using 1:2 with lines title "temp 0.45",  "energies_0.6.txt" using 1:2 with lines title "temp 0.6"
 EOFMarker
 echo "-- -- finished plot"
 
-echo "-- -- sending telegram message"
-curl -s -X POST https://api.telegram.org/bot1692780481:AAEgf_iLfjGG3hThdu52fN8ob7GiGNncawc/sendPhoto -F chat_id=576139175 -F photo="@energies.png" -F caption="Script for micelle is finished"
-echo "-- -- sent message"
+echo "-- -- making matplotlib plot"
+python3 ../matplotlib_plot_maker.py $num_params 50
+echo "-- -- finished plot"
+
+echo "-- -- sending telegram messages"
+curl -s -X POST https://api.telegram.org/bot1692780481:AAEgf_iLfjGG3hThdu52fN8ob7GiGNncawc/sendPhoto -F chat_id=576139175 -F photo="@energies.png" -F caption="Script for micelle is finished. Plots for energies:"
+curl -s -X POST https://api.telegram.org/bot1692780481:AAEgf_iLfjGG3hThdu52fN8ob7GiGNncawc/sendPhoto -F chat_id=576139175 -F photo="@msds_plt.png" -F caption="Plots for MSDs"
+echo "-- -- sent messages"
 
 echo "-- finished all"
