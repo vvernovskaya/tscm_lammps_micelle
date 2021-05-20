@@ -7,7 +7,7 @@ echo "-- started making visualization"
 
 curl -s -X POST https://api.telegram.org/bot1692780481:AAEgf_iLfjGG3hThdu52fN8ob7GiGNncawc/sendMessage -d chat_id=576139175 -d text="Started making video for micelle."
 
-python3 ../micelle_ovito_vis.py $n_steps
+ovitos -nt 4 ../micelle_ovito_vis.py $n_steps
 
 curl -s -X POST https://api.telegram.org/bot1692780481:AAEgf_iLfjGG3hThdu52fN8ob7GiGNncawc/sendMessage -d chat_id=576139175 -d text="Finished making video for micelle."
 
