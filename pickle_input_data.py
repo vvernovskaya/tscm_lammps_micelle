@@ -12,8 +12,8 @@ Boundary conditions are also taken into account here.
 
 CELL_SIZE = 30		# CHECK THIS !!!!!!!!!!!!!!!!!
 BOUND_LAYER = CELL_SIZE * 0.1
-N_STEPS = 1000
-N_PARAMS = int(sys.argv[1])		# how many times we've modified the parameter
+N_STEPS = int(sys.argv[1])
+N_PARAMS = int(sys.argv[2])		# how many times we've modified the parameter
 PARAM_STEP = 0.15
 #INPUT_TEMPLATE = "temp_" 	# same part of input filenames
 INITIAL_PARAM = 0

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 num_params=5
+n_steps=6000
 
 echo "-- started executing the script"
 
@@ -36,12 +37,22 @@ rm log.lammps
 done
 
 echo "-- -- started making pickle from dump.micelle for"
-python3 ../pickle_input_data.py $num_params
+python3 ../pickle_input_data.py $n_steps $num_params
 echo "-- -- finished pickle"
 
 echo "-- -- started calculating msd for"
-python3 ../msd.py $num_params
+python3 ../msd.py $n_steps $num_params
 echo "-- -- finished msd"
+
+echo "-- -- started making video"
+curl -s -X POST https://api.telegram.org/bot1692780481:AAEgf_iLfjGG3hThdu52fN8ob7GiGNncawc/sendMessage -d chat_id=576139175 -d text="Started making video for micelle."
+
+python3 ../micelle_ovito_vis.py $n_steps
+
+curl -s -X POST https://api.telegram.org/bot1692780481:AAEgf_iLfjGG3hThdu52fN8ob7GiGNncawc/sendMessage -d chat_id=576139175 -d text="Finished making video for micelle."
+echo "-- -- finished video"
+
+rm log.txt
 
 echo "-- -- making energies plot in gnuplot"
 gnuplot -persist <<-EOFMarker
@@ -57,12 +68,13 @@ EOFMarker
 echo "-- -- finished plot"
 
 echo "-- -- making matplotlib plot"
-python3 ../matplotlib_plot_maker.py $num_params 50
+python3 ../matplotlib_plot_maker.py $n_steps $num_params 50
 echo "-- -- finished plot"
 
 echo "-- -- sending telegram messages"
 curl -s -X POST https://api.telegram.org/bot1692780481:AAEgf_iLfjGG3hThdu52fN8ob7GiGNncawc/sendPhoto -F chat_id=576139175 -F photo="@energies.png" -F caption="Script for micelle is finished. Plots for energies:"
 curl -s -X POST https://api.telegram.org/bot1692780481:AAEgf_iLfjGG3hThdu52fN8ob7GiGNncawc/sendPhoto -F chat_id=576139175 -F photo="@msds_plt.png" -F caption="Plots for MSDs"
+curl -s -X POST https://api.telegram.org/bot1692780481:AAEgf_iLfjGG3hThdu52fN8ob7GiGNncawc/sendVideo -F chat_id=576139175 -F video="@micelle.mp4" -F caption="Visualization of micelle"
 echo "-- -- sent messages"
 
 echo "-- finished all"

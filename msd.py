@@ -2,7 +2,7 @@ import pickle
 import multiprocessing as mp
 import sys
 
-N_STEPS = 1000
+N_STEPS = int(sys.argv[1])
 STEP_STEPS = 50
 N_TYPES = 4
 '''
@@ -10,7 +10,7 @@ Number of particles of each type (had to count here since
 no information is in data.micelle or def.micelle).
 '''
 N_PARTICLES = [0] * N_TYPES
-N_PARAMS = int(sys.argv[1])
+N_PARAMS = int(sys.argv[2])
 
 NUM_CPU = 4
 
