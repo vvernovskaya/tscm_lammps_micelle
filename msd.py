@@ -50,15 +50,10 @@ with open('coords.pickle', 'rb') as f:
 
 count_particles(all_coords[0][0])
 
-#all_params_msds = [ [ [0] * N_TYPES ] for _ in range(N_PARAMS) ] 
 
 with mp.Pool(NUM_CPU) as p:
 	all_params_msds = p.map(run_msd_one_param, all_coords)
 
-#for i in range(N_PARAMS):
-#	start_coords = all_coords[i][0]
-#	for j in range(N_STEPS):
-#		count_msd(start_coords, all_coords[i][j], all_params_msds[i])
 
 with open('msds.pickle', 'wb') as f:
 	pickle.dump(all_params_msds, f)
